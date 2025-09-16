@@ -6,6 +6,39 @@ mod storage;
 mod badge;
 mod event;
 
+// Função FFI para Python
+#[no_mangle]
+pub extern "C" fn add(left: u64, right: u64) -> u64 {
+    left + right
+}
+
+// Exemplo FFI: retorna ponteiro para array de badges (strings)
+use core::ffi::c_char;
+
+#[no_mangle]
+pub extern "C" fn list_user_badges(user_id: u64, out_len: *mut usize) -> *const *const c_char {
+    // Exemplo fixo de badges
+    const BADGES: [&'static str; 3] = ["badge1", "badge2", "badge3"];
+    // Converte para ponteiros C
+    static mut BADGE_PTRS: [*const c_char; 3] = [0 as *const c_char; 3];
+    for (i, badge) in BADGES.iter().enumerate() {
+        unsafe {
+            BADGE_PTRS[i] = badge.as_ptr() as *const c_char;
+        }
+    }
+    unsafe {
+        *out_len = BADGES.len();
+        BADGE_PTRS.as_ptr()
+    }
+}
+
+pub fn add(left: u64, right: u64) -> u64 {
+    left + right
+}
+
+#[contract]
+pub struct PoapBadge;
+
 pub fn add(left: u64, right: u64) -> u64 {
     left + right
 }
