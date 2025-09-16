@@ -1,0 +1,6 @@
+**/target/
+**/Cargo.lock
+**--network
+**--source
+**--wasm
+**25.0.1
