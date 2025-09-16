@@ -2,7 +2,7 @@ use soroban_sdk::{Env, Address, BytesN, Vec, symbol_short};
 
 use crate::storage;
 
-// Função para mintar badge para um usuário em um evento específico
+// Atribui uma badge (evento) a um usuário e registra o dono na lista de donos do evento
 pub fn mint_badge(env: Env, event_id: BytesN<32>, recipient: Address) {
     // adicionar badge ao usuário
     let mut user_badges: Vec<BytesN<32>> =
