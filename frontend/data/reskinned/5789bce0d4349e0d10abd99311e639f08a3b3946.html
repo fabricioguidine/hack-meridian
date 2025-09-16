@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>POAP Drops - Login</title>
+<base href="/"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://drops.poap.xyz/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="https://drops.poap.xyz/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://drops.poap.xyz/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
+<link href="https://drops.poap.xyz/site.webmanifest" rel="manifest"/>
+<link color="#5bbad5" href="https://drops.poap.xyz/safari-pinned-tab.svg" rel="mask-icon"/>
+<meta content="#da532c" name="msapplication-TileColor"/>
+<meta content="#ffffff" name="theme-color"/>
+<meta content="POAP Drops" property="og:title"/>
+<meta content="website" property="og:type"/>
+<meta content="Set up, manage, and distribute POAPs." property="og:description"/>
+<meta content="https://drops.poap.xyz/drops-og.png" property="og:image"/>
+<meta content="https://drops.poap.xyz" property="og:url"/>
+<meta content="https://drops.poap.xyz/drops-og.png" name="twitter:card"/>
+<style>
+      body,
+      html {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        font-family: 'Rubik';
+        font-style: normal;
+      }
+
+      #root {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+<link href="https://drops-auth.poap.xyz/assets/index.css" rel="stylesheet"/>
+<!-- Matomo -->
+<script>
+      var _paq = window._paq = window._paq || [];
+      /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="https://poapxyz.matomo.cloud/";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '5']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.async=true; g.src='//cdn.matomo.cloud/poapxyz.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+<!-- End Matomo Code -->
+<link href="../../stellar_ds/css/stellar.css" rel="stylesheet"/></head>
+<body class="stellar-dark">
+<div id="root"></div>
+<script src="https://cdn.auth0.com/js/auth0/9.18/auth0.min.js"></script>
+<script>
+      window.auth0Config = JSON.parse(decodeURIComponent(escape(window.atob('eyJpY29uIjoiaHR0cHM6Ly9wb2FwLnh5ei9QT0FQLmY3NGE3MzAwLnN2ZyIsImFzc2V0c1VybCI6IiIsImF1dGgwRG9tYWluIjoiYWNjb3VudHMuZHJvcHMucG9hcC54eXoiLCJhdXRoMFRlbmFudCI6Imlzc3VlcnMtdGVuYW50LXByb2QiLCJjbGllbnRDb25maWd1cmF0aW9uQmFzZVVybCI6Imh0dHBzOi8vYWNjb3VudHMuZHJvcHMucG9hcC54eXovIiwiY2FsbGJhY2tPbkxvY2F0aW9uSGFzaCI6ZmFsc2UsImNhbGxiYWNrVVJMIjoiaHR0cHM6Ly9kcm9wcy5wb2FwLnh5ei9hcGkvYXV0aC9jYWxsYmFjayIsImNkbiI6Imh0dHBzOi8vY2RuLmF1dGgwLmNvbS8iLCJjbGllbnRJRCI6IkdwVmFUMmdoMnZFOVFqY1FON0dFR3BMdlc5RE81TjU1IiwiZGljdCI6eyJzaWduaW4iOnsidGl0bGUiOiJQT0FQIERyb3BzIn19LCJleHRyYVBhcmFtcyI6eyJwcm90b2NvbCI6Im9hdXRoMiIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwgb2ZmbGluZV9hY2Nlc3MiLCJyZXNwb25zZV90eXBlIjoiY29kZSIsImF1ZGllbmNlIjoiaHR0cHM6Ly9pc3N1ZXJzLXRlbmFudC1wcm9kLnVzLmF1dGgwLmNvbS9hcGkvdjIvIiwibm9uY2UiOiI2Z3FRX09JY21hYTJoMGxCd0x3OVZaUHN3Z0d3ZGxxNHVKVUxuMGZPQnU4IiwiY29kZV9jaGFsbGVuZ2UiOiJnTGlXT2RJUTVyVjYzbjJMNno4SG5EaUc2RXJQSGZHUGxvMl8yd0lKYTNnIiwiY29kZV9jaGFsbGVuZ2VfbWV0aG9kIjoiUzI1NiIsIl9jc3JmIjoiNHBaZjh0RFAtWFRjbHhjVGotMVpXNU9DWVUtSENERkJfRFJJIiwiX2ludHN0YXRlIjoiZGVwcmVjYXRlZCIsInN0YXRlIjoiaEtGbzJTQlFTRTlGWW1sRlRpMTJMVU5rVkdONmJ6bEpNMmwwWlRkcmJGOW5SVFpITTZGdXBXeHZaMmx1bzNScFpOa2dhbFJIWDBoWlkzRklaMHB4V0habllVOXdZa0pyZDBNMU1tSlVNM2RyUlUyalkybGsyU0JIY0ZaaFZESm5hREoyUlRsUmFtTlJUamRIUlVkd1RIWlhPVVJQTlU0MU5RIn0sImludGVybmFsT3B0aW9ucyI6eyJwcm90b2NvbCI6Im9hdXRoMiIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwgb2ZmbGluZV9hY2Nlc3MiLCJyZXNwb25zZV90eXBlIjoiY29kZSIsImF1ZGllbmNlIjoiaHR0cHM6Ly9pc3N1ZXJzLXRlbmFudC1wcm9kLnVzLmF1dGgwLmNvbS9hcGkvdjIvIiwibm9uY2UiOiI2Z3FRX09JY21hYTJoMGxCd0x3OVZaUHN3Z0d3ZGxxNHVKVUxuMGZPQnU4IiwiY29kZV9jaGFsbGVuZ2UiOiJnTGlXT2RJUTVyVjYzbjJMNno4SG5EaUc2RXJQSGZHUGxvMl8yd0lKYTNnIiwiY29kZV9jaGFsbGVuZ2VfbWV0aG9kIjoiUzI1NiIsIl9jc3JmIjoiNHBaZjh0RFAtWFRjbHhjVGotMVpXNU9DWVUtSENERkJfRFJJIiwiX2ludHN0YXRlIjoiZGVwcmVjYXRlZCIsInN0YXRlIjoiaEtGbzJTQlFTRTlGWW1sRlRpMTJMVU5rVkdONmJ6bEpNMmwwWlRkcmJGOW5SVFpITTZGdXBXeHZaMmx1bzNScFpOa2dhbFJIWDBoWlkzRklaMHB4V0habllVOXdZa0pyZDBNMU1tSlVNM2RyUlUyalkybGsyU0JIY0ZaaFZESm5hREoyUlRsUmFtTlJUamRIUlVkd1RIWlhPVVJQTlU0MU5RIn0sIndpZGdldFVybCI6Imh0dHBzOi8vY2RuLmF1dGgwLmNvbS93Mi9hdXRoMC13aWRnZXQtNS4yLm1pbi5qcyIsImlzVGhpcmRQYXJ0eUNsaWVudCI6ZmFsc2UsImF1dGhvcml6YXRpb25TZXJ2ZXIiOnsidXJsIjoiaHR0cHM6Ly9hY2NvdW50cy5kcm9wcy5wb2FwLnh5eiIsImlzc3VlciI6Imh0dHBzOi8vYWNjb3VudHMuZHJvcHMucG9hcC54eXovIn0sImNvbG9ycyI6eyJwYWdlX2JhY2tncm91bmQiOiIjMDAwMDAwIiwicHJpbWFyeSI6IiM2MzVkZmYifX0='))))
+    </script>
+<script src="https://drops-auth.poap.xyz/assets/index.js" type="module"></script>
+</body>
+</html>
