@@ -1,0 +1,10 @@
+/Users/luciana.santana/Downloads/hack-meridian-contracts/contracts/poap_badge/target/release/deps/wasmi_arena-3ac975f1f72dbaf6.d: /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/lib.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/component_vec.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/dedup.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/guarded.rs
+
+/Users/luciana.santana/Downloads/hack-meridian-contracts/contracts/poap_badge/target/release/deps/libwasmi_arena-3ac975f1f72dbaf6.rlib: /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/lib.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/component_vec.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/dedup.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/guarded.rs
+
+/Users/luciana.santana/Downloads/hack-meridian-contracts/contracts/poap_badge/target/release/deps/libwasmi_arena-3ac975f1f72dbaf6.rmeta: /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/lib.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/component_vec.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/dedup.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/guarded.rs
+
+/Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/lib.rs:
+/Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/component_vec.rs:
+/Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/dedup.rs:
+/Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmi_arena-0.4.1/src/guarded.rs:

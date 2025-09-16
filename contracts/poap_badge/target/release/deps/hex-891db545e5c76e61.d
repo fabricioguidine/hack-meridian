@@ -1,0 +1,8 @@
+/Users/luciana.santana/Downloads/hack-meridian-contracts/contracts/poap_badge/target/release/deps/hex-891db545e5c76e61.d: /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hex-0.4.3/src/lib.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hex-0.4.3/src/error.rs
+
+/Users/luciana.santana/Downloads/hack-meridian-contracts/contracts/poap_badge/target/release/deps/libhex-891db545e5c76e61.rlib: /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hex-0.4.3/src/lib.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hex-0.4.3/src/error.rs
+
+/Users/luciana.santana/Downloads/hack-meridian-contracts/contracts/poap_badge/target/release/deps/libhex-891db545e5c76e61.rmeta: /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hex-0.4.3/src/lib.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hex-0.4.3/src/error.rs
+
+/Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hex-0.4.3/src/lib.rs:
+/Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hex-0.4.3/src/error.rs:

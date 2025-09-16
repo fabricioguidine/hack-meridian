@@ -1,0 +1,8 @@
+/Users/luciana.santana/Downloads/hack-meridian-contracts/contracts/poap_badge/target/release/deps/serde_with_macros-719a006562b0e85d.d: /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.14.0/src/lib.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.14.0/src/apply.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.14.0/src/lazy_bool.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.14.0/src/utils.rs
+
+/Users/luciana.santana/Downloads/hack-meridian-contracts/contracts/poap_badge/target/release/deps/libserde_with_macros-719a006562b0e85d.dylib: /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.14.0/src/lib.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.14.0/src/apply.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.14.0/src/lazy_bool.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.14.0/src/utils.rs
+
+/Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.14.0/src/lib.rs:
+/Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.14.0/src/apply.rs:
+/Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.14.0/src/lazy_bool.rs:
+/Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.14.0/src/utils.rs:

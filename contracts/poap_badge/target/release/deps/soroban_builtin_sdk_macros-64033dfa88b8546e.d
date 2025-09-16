@@ -1,0 +1,7 @@
+/Users/luciana.santana/Downloads/hack-meridian-contracts/contracts/poap_badge/target/release/deps/soroban_builtin_sdk_macros-64033dfa88b8546e.d: /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-builtin-sdk-macros-23.0.1/src/lib.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-builtin-sdk-macros-23.0.1/src/derive_fn.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-builtin-sdk-macros-23.0.1/src/derive_type.rs
+
+/Users/luciana.santana/Downloads/hack-meridian-contracts/contracts/poap_badge/target/release/deps/libsoroban_builtin_sdk_macros-64033dfa88b8546e.dylib: /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-builtin-sdk-macros-23.0.1/src/lib.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-builtin-sdk-macros-23.0.1/src/derive_fn.rs /Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-builtin-sdk-macros-23.0.1/src/derive_type.rs
+
+/Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-builtin-sdk-macros-23.0.1/src/lib.rs:
+/Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-builtin-sdk-macros-23.0.1/src/derive_fn.rs:
+/Users/luciana.santana/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/soroban-builtin-sdk-macros-23.0.1/src/derive_type.rs:
