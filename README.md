@@ -42,3 +42,206 @@ flowchart LR
     B --> D[👤 User Wallet]
     D --> E[💻 Frontend / DApp]
     E -->|Display| D
+```
+
+---
+
+## 🧩 Smart Contract — `poap_badge`
+
+The on-chain core lives in [`contracts/poap_badge`](contracts/poap_badge). Events are
+identified by a `BytesN<32>` id (e.g. the hash of the event slug); rich content
+(image, attributes) lives on IPFS and is referenced by `image_ipfs`.
+
+### Public API
+
+| Function | Auth | Description |
+|---|---|---|
+| `create_event(event_id, organizer, name, description, image_ipfs)` | organizer | Registers an event. Fails with `EventAlreadyExists` if the id is taken. |
+| `mint_badge(event_id, recipient)` | event organizer | Issues the event badge to `recipient`. Fails with `EventNotFound` / `BadgeAlreadyMinted`. |
+| `has_badge(event_id, user) -> bool` | — | Whether `user` holds the event badge. |
+| `list_user_badges(user) -> Vec<BytesN<32>>` | — | Badges (event ids) a user owns. |
+| `total_badges(user) -> u32` | — | Badge count — feeds the gamification layer. |
+| `list_event_owners(event_id) -> Vec<Address>` | — | Collectors of an event's badge. |
+| `list_events() -> Vec<BytesN<32>>` | — | All registered events. |
+| `list_all_badges() -> Vec<BadgeInfo>` | — | Gallery: every event with its metadata. |
+| `get_event(event_id) -> EventMetadata` | — | Event metadata. Fails with `EventNotFound`. |
+
+### Errors
+
+| Code | Variant |
+|---|---|
+| 1 | `EventAlreadyExists` |
+| 2 | `EventNotFound` |
+| 3 | `BadgeAlreadyMinted` |
+
+### Module layout
+
+```
+contracts/poap_badge/src/
+├── lib.rs       # contract surface (#[contractimpl]) + auth
+├── event.rs     # event creation / listing / gallery
+├── badge.rs     # mint / has_badge / list
+├── storage.rs   # typed DataKey enum + persistent storage helpers
+├── types.rs     # EventMetadata, BadgeInfo
+├── error.rs     # contract error codes
+└── test.rs      # unit + auth + end-to-end tests
+```
+
+---
+
+## 🧱 UML
+
+### Class diagram (domain model)
+
+```mermaid
+classDiagram
+    class PoapBadge {
+        <<contract>>
+        +create_event(event_id, organizer, name, description, image_ipfs) Result
+        +mint_badge(event_id, recipient) Result
+        +has_badge(event_id, user) bool
+        +list_user_badges(user) Vec~BytesN32~
+        +total_badges(user) u32
+        +list_event_owners(event_id) Vec~Address~
+        +list_events() Vec~BytesN32~
+        +list_all_badges() Vec~BadgeInfo~
+        +get_event(event_id) Result~EventMetadata~
+    }
+    class EventMetadata {
+        +String name
+        +String description
+        +String image_ipfs
+    }
+    class BadgeInfo {
+        +BytesN32 event_id
+        +EventMetadata metadata
+    }
+    class DataKey {
+        <<enumeration>>
+        Events
+        EventMeta(BytesN32)
+        EventOrganizer(BytesN32)
+        EventOwners(BytesN32)
+        UserBadges(Address)
+    }
+    class Error {
+        <<enumeration>>
+        EventAlreadyExists
+        EventNotFound
+        BadgeAlreadyMinted
+    }
+    PoapBadge ..> DataKey : persists via
+    PoapBadge ..> Error : returns
+    BadgeInfo *-- EventMetadata
+    PoapBadge ..> BadgeInfo : builds gallery
+```
+
+### Sequence — claim flow
+
+```mermaid
+sequenceDiagram
+    actor Org as Organizer
+    actor Att as Attendee
+    participant FE as Frontend / DApp
+    participant C as Soroban Contract
+    participant IPFS as IPFS
+
+    Org->>IPFS: pin badge image + metadata
+    IPFS-->>Org: ipfs://CID
+    Org->>C: create_event(id, organizer, name, desc, ipfs://CID)
+    Note over C: require_auth(organizer)<br/>reject if id exists
+    C-->>Org: ok
+
+    Att->>FE: connect wallet, request badge
+    Org->>C: mint_badge(id, attendee)
+    Note over C: require_auth(event organizer)<br/>reject duplicate
+    C-->>C: record UserBadges + EventOwners
+    C-->>Org: ok
+
+    Att->>FE: open collection
+    FE->>C: list_user_badges(attendee)
+    C-->>FE: [event ids]
+    FE->>C: get_event(id)
+    C-->>FE: metadata (ipfs://CID)
+    FE->>IPFS: fetch image
+    IPFS-->>FE: badge art
+    FE-->>Att: render gallery
+```
+
+### State — badge lifecycle (per attendee × event)
+
+```mermaid
+stateDiagram-v2
+    [*] --> NoBadge
+    NoBadge --> Owned: mint_badge() ✓
+    NoBadge --> NoBadge: mint unknown event → EventNotFound
+    Owned --> Owned: mint again → BadgeAlreadyMinted
+    Owned --> [*]
+```
+
+---
+
+## 🚀 Build, test & deploy
+
+```bash
+cd contracts/poap_badge
+
+# unit + e2e tests (11 tests)
+cargo test
+
+# build deployable wasm
+rustup target add wasm32-unknown-unknown
+cargo build --release --target wasm32-unknown-unknown
+# artifact: target/wasm32-unknown-unknown/release/poap_badge.wasm
+```
+
+No local Rust toolchain? Build inside Docker (matches `docker/contracts.Dockerfile`):
+
+```bash
+docker run --rm -v "$PWD:/app" -w /app rust:1.86 cargo test
+```
+
+> Requires Rust **1.85+** (a transitive dependency uses edition 2024).
+
+---
+
+## 🧪 Proof of Concept (POC)
+
+**Goal:** a live, demoable POAP loop on **Stellar testnet** — create an event, mint
+to real wallets, and show the collection — provable end-to-end in a few minutes.
+
+**Scope (in):**
+1. Deploy `poap_badge` to Soroban **testnet** via the Stellar CLI.
+2. Organizer script seeds 1–2 demo events (image pinned to IPFS via web3.storage/Pinata).
+3. A minimal claim page: connect **Freighter** wallet → organizer mints → attendee
+   sees the badge with its IPFS art.
+4. A read-only gallery page calling `list_all_badges` / `list_user_badges`.
+
+**Scope (out for the POC):** the optional indexer backend, mainnet, on-chain
+royalties/transfers, and the self-claim (signed-attendance) flow — all noted below as
+next steps.
+
+**Demo script (90 seconds):**
+`deploy → create_event("meridian-2025") → mint_badge(alice) → alice's gallery shows 1 badge → mint again → contract rejects (BadgeAlreadyMinted)`.
+
+**Suggested milestones:**
+- **M1** — contract testnet deploy + CLI invoke (✅ contract + tests done).
+- **M2** — Freighter wallet connect + mint from organizer key.
+- **M3** — gallery reads + IPFS image render.
+- **M4** — (stretch) self-claim with an organizer-signed claim code.
+
+### Backend: language recommendation
+
+The contract is the source of truth; a backend is **optional** (indexing/caching/REST).
+For talking to **Soroban RPC**, tooling maturity ranks:
+
+| Option | Verdict |
+|---|---|
+| **TypeScript** (`@stellar/stellar-sdk`) | ✅ Recommended — best-supported Soroban SDK, shares types with the frontend. |
+| **Python** (`stellar-sdk`) | ✅ Good — mature, ergonomic; ideal if the team prefers Python. |
+| **Rust** (`stellar-rpc-client`) | ⚠️ Possible — lets you share types with the contract, but heavier for a hackathon. |
+| **Go** (`stellar/go`) | ❌ Not advised — Horizon-focused, thin Soroban-RPC support. |
+
+> The earlier `ctypes`/`.dylib` bridge was removed: a Soroban contract compiles to
+> **wasm**, not a native shared library, so it can't be loaded via `ctypes`. Backends
+> must talk to the deployed contract over **Soroban RPC**.

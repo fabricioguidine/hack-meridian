@@ -24,6 +24,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "arbitrary"
+version = "1.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7d5a26814d8dcb93b0e5a0ff3c6d80a8843bafb21b39e8e18a6f05471870e110"
+dependencies = [
+ "derive_arbitrary",
+]
+
+[[package]]
 name = "ark-bls12-381"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -286,6 +295,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ctor"
+version = "0.2.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "32a2785755761f3ddc1492979ce1e48d2c00d09311c39e4466429188f3dd6501"
+dependencies = [
+ "quote",
+ "syn 2.0.106",
+]
+
+[[package]]
 name = "curve25519-dalek"
 version = "4.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -382,6 +401,17 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 1.0.109",
+]
+
+[[package]]
+name = "derive_arbitrary"
+version = "1.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "67e77553c4162a157adbf834ebae5b415acbecbeafc7a74b0e886657506a7611"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.106",
 ]
 
 [[package]]
@@ -1152,10 +1182,12 @@ version = "23.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "00067f52e8bbf1abf0de03fe3e2fbb06910893cfbe9a7d9093d6425658833ff3"
 dependencies = [
+ "arbitrary",
  "crate-git-revision",
  "ethnum",
  "num-derive",
  "num-traits",
+ "serde",
  "soroban-env-macros",
  "soroban-wasmi",
  "static_assertions",
@@ -1225,19 +1257,38 @@ dependencies = [
 ]
 
 [[package]]
+name = "soroban-ledger-snapshot"
+version = "23.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fea7299402f5f445089fde192cc68587baf0cc6432be300bce99d997fd85b4cb"
+dependencies = [
+ "serde",
+ "serde_json",
+ "serde_with",
+ "soroban-env-common",
+ "soroban-env-host",
+ "thiserror",
+]
+
+[[package]]
 name = "soroban-sdk"
 version = "23.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "af0e5bf6702f5952d78c5b2bcd05b0349f9a570cc62028d90dac3710b40cbe65"
 dependencies = [
+ "arbitrary",
  "bytes-lit",
  "crate-git-revision",
+ "ctor",
+ "derive_arbitrary",
+ "ed25519-dalek",
  "rand",
  "rustc_version",
  "serde",
  "serde_json",
  "soroban-env-guest",
  "soroban-env-host",
+ "soroban-ledger-snapshot",
  "soroban-sdk-macros",
  "stellar-strkey",
 ]
@@ -1341,6 +1392,7 @@ version = "23.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "89d2848e1694b0c8db81fd812bfab5ea71ee28073e09ccc45620ef3cf7a75a9b"
 dependencies = [
+ "arbitrary",
  "base64",
  "cfg_eval",
  "crate-git-revision",
