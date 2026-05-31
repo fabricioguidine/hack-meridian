@@ -1,64 +1,53 @@
-use soroban_sdk::{Env, Address, BytesN, Symbol, Vec, symbol_short, contracttype};
+use soroban_sdk::{Address, BytesN, Env, String, Vec};
+
+use crate::error::Error;
 use crate::storage;
+use crate::types::{BadgeInfo, EventMetadata};
 
-#[derive(Clone)]
-#[contracttype]
-pub struct EventMetadata {
-    pub name: Symbol,
-    pub description: Symbol,
-    pub image: Symbol, // URL/IPFS hash
-}
-
-// Função para criar um novo evento
+/// Cria um novo evento. Falha se o `event_id` já existir.
 pub fn create_event(
-    env: Env,
+    env: &Env,
     event_id: BytesN<32>,
     organizer: Address,
-    name: Symbol,
-    description: Symbol,
-    image: Symbol,
-) {
-    // salvar metadados
-    let metadata = EventMetadata { name, description, image };
-    env.storage().persistent().set(
-        &(&symbol_short!("em"), &event_id),
-        &metadata,
-    );
+    name: String,
+    description: String,
+    image_ipfs: String,
+) -> Result<(), Error> {
+    if storage::has_event(env, &event_id) {
+        return Err(Error::EventAlreadyExists);
+    }
 
-    // lista global de eventos
-    let mut events: Vec<BytesN<32>> = env
-        .storage()
-        .persistent()
-        .get(&symbol_short!("ev"))
-        .unwrap_or(Vec::new(&env));
+    let metadata = EventMetadata {
+        name,
+        description,
+        image_ipfs,
+    };
+    storage::set_event_metadata(env, &event_id, &metadata);
+    storage::set_event_organizer(env, &event_id, &organizer);
+    storage::push_event(env, &event_id);
 
-    events.push_back(event_id.clone());
-    env.storage().persistent().set(&symbol_short!("ev"), &events);
-
-    // associar organizador
-    env.storage().persistent().set(
-        &(&symbol_short!("org"), &event_id),
-        &organizer,
-    );
+    Ok(())
 }
 
-// Listar todos os eventos
-pub fn list_events(env: Env) -> Vec<BytesN<32>> {
-    env.storage()
-        .persistent()
-        .get(&symbol_short!("ev"))
-        .unwrap_or(Vec::new(&env))
+pub fn get_event_metadata(env: &Env, event_id: &BytesN<32>) -> Result<EventMetadata, Error> {
+    storage::get_event_metadata(env, event_id).ok_or(Error::EventNotFound)
 }
 
-// Obter metadados de um evento específico
-pub fn get_event_metadata(env: Env, event_id: BytesN<32>) -> EventMetadata {
-    env.storage()
-        .persistent()
-        .get(&(&symbol_short!("em"), &event_id))
-        .unwrap()
+pub fn list_events(env: &Env) -> Vec<BytesN<32>> {
+    storage::get_events(env)
 }
 
-// Listar todos os donos de badges de um evento específico
-pub fn list_event_owners(env: Env, event_id: BytesN<32>) -> Vec<Address> {
-    storage::get_event_owners(&env, &event_id)
+/// Galeria: todos os eventos com seus metadados.
+pub fn list_all_badges(env: &Env) -> Vec<BadgeInfo> {
+    let mut badges = Vec::new(env);
+    for event_id in storage::get_events(env).iter() {
+        if let Some(metadata) = storage::get_event_metadata(env, &event_id) {
+            badges.push_back(BadgeInfo { event_id, metadata });
+        }
+    }
+    badges
+}
+
+pub fn list_event_owners(env: &Env, event_id: &BytesN<32>) -> Vec<Address> {
+    storage::get_event_owners(env, event_id)
 }
