@@ -1,45 +1,33 @@
-use soroban_sdk::{Env, Address, BytesN, Vec, symbol_short};
+use soroban_sdk::{Address, BytesN, Env, Vec};
 
+use crate::error::Error;
 use crate::storage;
 
-// Atribui uma badge (evento) a um usuário e registra o dono na lista de donos do evento
-pub fn mint_badge(env: Env, event_id: BytesN<32>, recipient: Address) {
-    // adicionar badge ao usuário
-    let mut user_badges: Vec<BytesN<32>> =
-        env.storage().persistent()
-            .get(&(&symbol_short!("ub"), &recipient))
-            .unwrap_or(Vec::new(&env));
+/// Emite a badge de um evento para `recipient`. Exige a autorização do
+/// organizador do evento e impede emissão dupla para o mesmo coletor.
+pub fn mint_badge(env: &Env, event_id: BytesN<32>, recipient: Address) -> Result<(), Error> {
+    let organizer = storage::get_event_organizer(env, &event_id).ok_or(Error::EventNotFound)?;
+    organizer.require_auth();
 
-    if !user_badges.contains(&event_id) {
-        user_badges.push_back(event_id.clone());
-        env.storage().persistent().set(
-            &(&symbol_short!("ub"), &recipient),
-            &user_badges,
-        );
+    if has_badge(env, &event_id, &recipient) {
+        return Err(Error::BadgeAlreadyMinted);
     }
 
-    // adicionar usuário na lista de owners do evento
-    let mut owners: Vec<Address> =
-        env.storage().persistent()
-            .get(&(&symbol_short!("eo"), &event_id))
-            .unwrap_or(Vec::new(&env));
+    let mut user_badges = storage::get_user_badges(env, &recipient);
+    user_badges.push_back(event_id.clone());
+    storage::set_user_badges(env, &recipient, &user_badges);
 
-    if !owners.contains(&recipient) {
-        owners.push_back(recipient.clone());
-        env.storage().persistent().set(
-            &(&symbol_short!("eo"), &event_id),
-            &owners,
-        );
-    }
+    let mut owners = storage::get_event_owners(env, &event_id);
+    owners.push_back(recipient.clone());
+    storage::set_event_owners(env, &event_id, &owners);
+
+    Ok(())
 }
 
-// Listar todos os badges de um usuário específico
-pub fn list_user_badges(env: Env, user: Address) -> Vec<BytesN<32>> {
-    storage::get_user_badges(&env, &user)
+pub fn has_badge(env: &Env, event_id: &BytesN<32>, user: &Address) -> bool {
+    storage::get_user_badges(env, user).contains(event_id)
 }
 
-// Verifica se um usuário já possui o badge de um evento específico
-pub fn has_badge(event_id: &BytesN<32>, user: &Address, env: &Env) -> bool {
-    let user_badges = storage::get_user_badges(env, user);
-    user_badges.contains(event_id)
+pub fn list_user_badges(env: &Env, user: &Address) -> Vec<BytesN<32>> {
+    storage::get_user_badges(env, user)
 }
