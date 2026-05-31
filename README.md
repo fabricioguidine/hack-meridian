@@ -6,7 +6,7 @@ This project is a **decentralized badge system** built on the **Soroban smart co
 It enables organizers to create **verifiable digital badges** (similar to NFTs) for events and online courses.  
 Participants who attend an event or complete a course receive a **unique badge that proves their participation**.
 
-The solution also incorporates **gamification and rewards**: collecting badges can unlock achievements, incentives, or recognition — motivating users to join more events and courses.  
+The solution also incorporates **gamification and rewards**: collecting badges can unlock achievements, incentives, or recognition - motivating users to join more events and courses.  
 
 - **Badges** are immutable, verifiable, and stored **on-chain**.  
 - **Metadata** (name, description, images) is referenced via **IPFS**.  
@@ -46,7 +46,7 @@ flowchart LR
 
 ---
 
-## 🧩 Smart Contract — `poap_badge`
+## 🧩 Smart Contract - `poap_badge`
 
 The on-chain core lives in [`contracts/poap_badge`](contracts/poap_badge). Events are
 identified by a `BytesN<32>` id (e.g. the hash of the event slug); rich content
@@ -58,13 +58,13 @@ identified by a `BytesN<32>` id (e.g. the hash of the event slug); rich content
 |---|---|---|
 | `create_event(event_id, organizer, name, description, image_ipfs)` | organizer | Registers an event. Fails with `EventAlreadyExists` if the id is taken. |
 | `mint_badge(event_id, recipient)` | event organizer | Issues the event badge to `recipient`. Fails with `EventNotFound` / `BadgeAlreadyMinted`. |
-| `has_badge(event_id, user) -> bool` | — | Whether `user` holds the event badge. |
-| `list_user_badges(user) -> Vec<BytesN<32>>` | — | Badges (event ids) a user owns. |
-| `total_badges(user) -> u32` | — | Badge count — feeds the gamification layer. |
-| `list_event_owners(event_id) -> Vec<Address>` | — | Collectors of an event's badge. |
-| `list_events() -> Vec<BytesN<32>>` | — | All registered events. |
-| `list_all_badges() -> Vec<BadgeInfo>` | — | Gallery: every event with its metadata. |
-| `get_event(event_id) -> EventMetadata` | — | Event metadata. Fails with `EventNotFound`. |
+| `has_badge(event_id, user) -> bool` | - | Whether `user` holds the event badge. |
+| `list_user_badges(user) -> Vec<BytesN<32>>` | - | Badges (event ids) a user owns. |
+| `total_badges(user) -> u32` | - | Badge count - feeds the gamification layer. |
+| `list_event_owners(event_id) -> Vec<Address>` | - | Collectors of an event's badge. |
+| `list_events() -> Vec<BytesN<32>>` | - | All registered events. |
+| `list_all_badges() -> Vec<BadgeInfo>` | - | Gallery: every event with its metadata. |
+| `get_event(event_id) -> EventMetadata` | - | Event metadata. Fails with `EventNotFound`. |
 
 ### Errors
 
@@ -136,7 +136,7 @@ classDiagram
     PoapBadge ..> BadgeInfo : builds gallery
 ```
 
-### Sequence — claim flow
+### Sequence - claim flow
 
 ```mermaid
 sequenceDiagram
@@ -168,7 +168,7 @@ sequenceDiagram
     FE-->>Att: render gallery
 ```
 
-### State — badge lifecycle (per attendee × event)
+### State - badge lifecycle (per attendee × event)
 
 ```mermaid
 stateDiagram-v2
@@ -207,8 +207,8 @@ docker run --rm -v "$PWD:/app" -w /app rust:1.86 cargo test
 
 ## 🧪 Proof of Concept (POC)
 
-**Goal:** a live, demoable POAP loop on **Stellar testnet** — create an event, mint
-to real wallets, and show the collection — provable end-to-end in a few minutes.
+**Goal:** a live, demoable POAP loop on **Stellar testnet** - create an event, mint
+to real wallets, and show the collection - provable end-to-end in a few minutes.
 
 **Scope (in):**
 1. Deploy `poap_badge` to Soroban **testnet** via the Stellar CLI.
@@ -218,17 +218,17 @@ to real wallets, and show the collection — provable end-to-end in a few minute
 4. A read-only gallery page calling `list_all_badges` / `list_user_badges`.
 
 **Scope (out for the POC):** the optional indexer backend, mainnet, on-chain
-royalties/transfers, and the self-claim (signed-attendance) flow — all noted below as
+royalties/transfers, and the self-claim (signed-attendance) flow - all noted below as
 next steps.
 
 **Demo script (90 seconds):**
 `deploy → create_event("meridian-2025") → mint_badge(alice) → alice's gallery shows 1 badge → mint again → contract rejects (BadgeAlreadyMinted)`.
 
 **Suggested milestones:**
-- **M1** — contract testnet deploy + CLI invoke (✅ contract + tests done).
-- **M2** — Freighter wallet connect + mint from organizer key.
-- **M3** — gallery reads + IPFS image render.
-- **M4** — (stretch) self-claim with an organizer-signed claim code.
+- **M1** - contract testnet deploy + CLI invoke (✅ contract + tests done).
+- **M2** - Freighter wallet connect + mint from organizer key.
+- **M3** - gallery reads + IPFS image render.
+- **M4** - (stretch) self-claim with an organizer-signed claim code.
 
 ### Backend: language recommendation
 
@@ -237,10 +237,10 @@ For talking to **Soroban RPC**, tooling maturity ranks:
 
 | Option | Verdict |
 |---|---|
-| **TypeScript** (`@stellar/stellar-sdk`) | ✅ Recommended — best-supported Soroban SDK, shares types with the frontend. |
-| **Python** (`stellar-sdk`) | ✅ Good — mature, ergonomic; ideal if the team prefers Python. |
-| **Rust** (`stellar-rpc-client`) | ⚠️ Possible — lets you share types with the contract, but heavier for a hackathon. |
-| **Go** (`stellar/go`) | ❌ Not advised — Horizon-focused, thin Soroban-RPC support. |
+| **TypeScript** (`@stellar/stellar-sdk`) | ✅ Recommended - best-supported Soroban SDK, shares types with the frontend. |
+| **Python** (`stellar-sdk`) | ✅ Good - mature, ergonomic; ideal if the team prefers Python. |
+| **Rust** (`stellar-rpc-client`) | ⚠️ Possible - lets you share types with the contract, but heavier for a hackathon. |
+| **Go** (`stellar/go`) | ❌ Not advised - Horizon-focused, thin Soroban-RPC support. |
 
 > The earlier `ctypes`/`.dylib` bridge was removed: a Soroban contract compiles to
 > **wasm**, not a native shared library, so it can't be loaded via `ctypes`. Backends
