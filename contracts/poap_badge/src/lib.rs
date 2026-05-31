@@ -1,96 +1,82 @@
 #![no_std]
 
-use soroban_sdk::{contract, contractimpl, Env, Address, BytesN, Symbol};
+//! POAP-like badge contract on Soroban.
+//!
+//! Organizadores criam eventos e emitem badges verificáveis (POAP) para os
+//! participantes. As badges são imutáveis e ficam on-chain; o conteúdo rico
+//! (imagem/atributos) é referenciado via IPFS em [`EventMetadata`].
 
-mod storage;
 mod badge;
+mod error;
 mod event;
-
-// Função FFI para Python
-#[no_mangle]
-pub extern "C" fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
-
-// Exemplo FFI: retorna ponteiro para array de badges (strings)
-use core::ffi::c_char;
-
-#[no_mangle]
-pub extern "C" fn list_user_badges(user_id: u64, out_len: *mut usize) -> *const *const c_char {
-    // Exemplo fixo de badges
-    const BADGES: [&'static str; 3] = ["badge1", "badge2", "badge3"];
-    // Converte para ponteiros C
-    static mut BADGE_PTRS: [*const c_char; 3] = [0 as *const c_char; 3];
-    for (i, badge) in BADGES.iter().enumerate() {
-        unsafe {
-            BADGE_PTRS[i] = badge.as_ptr() as *const c_char;
-        }
-    }
-    unsafe {
-        *out_len = BADGES.len();
-        BADGE_PTRS.as_ptr()
-    }
-}
-
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
-
-#[contract]
-pub struct PoapBadge;
-
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+mod storage;
+mod types;
 
 #[cfg(test)]
-mod tests {
-    use super::*;
+mod test;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+use soroban_sdk::{contract, contractimpl, Address, BytesN, Env, String, Vec};
+
+use crate::error::Error;
+use crate::types::{BadgeInfo, EventMetadata};
 
 #[contract]
 pub struct PoapBadge;
 
-// Cria um evento
 #[contractimpl]
 impl PoapBadge {
-    // importa funções de event.rs
+    /// Cria um evento. Exige a autorização do `organizer` e falha se o
+    /// `event_id` já existir.
     pub fn create_event(
         env: Env,
         event_id: BytesN<32>,
         organizer: Address,
-        name: Symbol,
-        description: Symbol,
-        image: Symbol,
-    ) {
-        event::create_event(
-            env,
-            event_id,
-            organizer,
-            name,
-            description,
-            image,
-        );
+        name: String,
+        description: String,
+        image_ipfs: String,
+    ) -> Result<(), Error> {
+        organizer.require_auth();
+        event::create_event(&env, event_id, organizer, name, description, image_ipfs)
     }
 
-    // importa funções de badge.rs
-    pub fn mint_badge(env: soroban_sdk::Env, event_id: soroban_sdk::BytesN<32>, recipient: soroban_sdk::Address) {
-        badge::mint_badge(env, event_id, recipient);
+    /// Emite a badge do evento para `recipient`. Só o organizador do evento
+    /// pode emitir; emissão dupla é rejeitada.
+    pub fn mint_badge(env: Env, event_id: BytesN<32>, recipient: Address) -> Result<(), Error> {
+        badge::mint_badge(&env, event_id, recipient)
     }
 
-    // Lista todas as badges associadas a um usuário específico
-    pub fn list_user_badges(env: soroban_sdk::Env, user: soroban_sdk::Address) -> soroban_sdk::Vec<soroban_sdk::BytesN<32>> {
-        badge::list_user_badges(env, user)
+    /// Verifica se `user` possui a badge do evento.
+    pub fn has_badge(env: Env, event_id: BytesN<32>, user: Address) -> bool {
+        badge::has_badge(&env, &event_id, &user)
     }
 
-    // Lista todos os usuários que possuem o badge de um evento específico
-    pub fn list_event_owners(env: soroban_sdk::Env, event_id: soroban_sdk::BytesN<32>) -> soroban_sdk::Vec<soroban_sdk::Address> {
-        event::list_event_owners(env, event_id)
+    /// Lista as badges (event ids) que `user` possui.
+    pub fn list_user_badges(env: Env, user: Address) -> Vec<BytesN<32>> {
+        badge::list_user_badges(&env, &user)
+    }
+
+    /// Total de badges de `user` (usado pela camada de gamificação).
+    pub fn total_badges(env: Env, user: Address) -> u32 {
+        badge::list_user_badges(&env, &user).len()
+    }
+
+    /// Lista os coletores da badge de um evento.
+    pub fn list_event_owners(env: Env, event_id: BytesN<32>) -> Vec<Address> {
+        event::list_event_owners(&env, &event_id)
+    }
+
+    /// Lista todos os eventos registrados.
+    pub fn list_events(env: Env) -> Vec<BytesN<32>> {
+        event::list_events(&env)
+    }
+
+    /// Galeria: todos os eventos com seus metadados.
+    pub fn list_all_badges(env: Env) -> Vec<BadgeInfo> {
+        event::list_all_badges(&env)
+    }
+
+    /// Metadados de um evento. Falha se o evento não existir.
+    pub fn get_event(env: Env, event_id: BytesN<32>) -> Result<EventMetadata, Error> {
+        event::get_event_metadata(&env, &event_id)
     }
 }
