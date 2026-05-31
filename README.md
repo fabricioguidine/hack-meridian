@@ -230,16 +230,19 @@ next steps.
 - **M3** - gallery reads + IPFS image render.
 - **M4** - (stretch) self-claim with an organizer-signed claim code.
 
-### Backend: language recommendation
+### Backend
 
-The contract is the source of truth; a backend is **optional** (indexing/caching/REST).
-For talking to **Soroban RPC**, tooling maturity ranks:
+A read-only REST API is implemented in **Rust (axum)** under [`backend/`](backend) -
+see [backend/README.md](backend/README.md). It reads contract state over Soroban RPC
+(`getLedgerEntries`, no signing needed) and ships with 11 tests.
+
+Language tradeoffs considered for the backend:
 
 | Option | Verdict |
 |---|---|
-| **TypeScript** (`@stellar/stellar-sdk`) | ✅ Recommended - best-supported Soroban SDK, shares types with the frontend. |
-| **Python** (`stellar-sdk`) | ✅ Good - mature, ergonomic; ideal if the team prefers Python. |
-| **Rust** (`stellar-rpc-client`) | ⚠️ Possible - lets you share types with the contract, but heavier for a hackathon. |
+| **Rust** (`axum` + Soroban RPC) | ✅ Implemented - shares the domain model with the contract; reads decoded straight from on-chain ScVal. |
+| **TypeScript** (`@stellar/stellar-sdk`) | ✅ Also strong - best-supported Soroban SDK, would share types with the frontend. |
+| **Python** (`stellar-sdk`) | ✅ Good - mature, ergonomic. |
 | **Go** (`stellar/go`) | ❌ Not advised - Horizon-focused, thin Soroban-RPC support. |
 
 > The earlier `ctypes`/`.dylib` bridge was removed: a Soroban contract compiles to

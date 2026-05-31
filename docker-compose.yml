@@ -4,8 +4,11 @@ services:
     build:
       context: .
       dockerfile: docker/backend.Dockerfile
-    volumes:
-      - ./backend:/app
+    environment:
+      # CONTRACT_ID is required: set it to the deployed C... strkey.
+      CONTRACT_ID: ${CONTRACT_ID:?set CONTRACT_ID to the deployed contract strkey}
+      SOROBAN_RPC_URL: ${SOROBAN_RPC_URL:-https://soroban-testnet.stellar.org}
+      PORT: "4000"
     ports:
       - "4000:4000"
     depends_on:
