@@ -14,6 +14,19 @@ services:
     depends_on:
       - contracts
 
+  backend-go:
+    build:
+      context: .
+      dockerfile: docker/backend-go.Dockerfile
+    environment:
+      CONTRACT_ID: ${CONTRACT_ID:?set CONTRACT_ID to the deployed contract strkey}
+      SOROBAN_RPC_URL: ${SOROBAN_RPC_URL:-https://soroban-testnet.stellar.org}
+      PORT: "4001"
+    ports:
+      - "4001:4001"
+    depends_on:
+      - contracts
+
   frontend:
     build:
       context: .
