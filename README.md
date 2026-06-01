@@ -1,5 +1,7 @@
 # Decentralized Badge System (POAP-like on Soroban)
 
+[![CI](https://github.com/fabricioguidine/hack-meridian/actions/workflows/ci.yml/badge.svg)](https://github.com/fabricioguidine/hack-meridian/actions/workflows/ci.yml)
+
 ## 📖 Project Description
 
 This project is a **decentralized badge system** built on the **Soroban smart contracts platform (Stellar network)**.  
