@@ -1,38 +1,22 @@
-<div align="center">
+# hack-meridian
 
-<img src=".github/assets/banner.svg" alt="hack-meridian" width="100%">
+A POAP-style event-badge dApp on Stellar Soroban. Organizers register events and mint immutable, verifiable participation badges on-chain; a Rust read API, an optional Go read API, and a React DApp consume the contract, with badge art stored off-chain on IPFS.
 
-[![CI](https://github.com/fabricioguidine/hack-meridian/actions/workflows/ci.yml/badge.svg)](https://github.com/fabricioguidine/hack-meridian/actions/workflows/ci.yml) [![Rust](https://img.shields.io/badge/Rust-2021-000000.svg?logo=rust&logoColor=white)](https://www.rust-lang.org) [![Soroban](https://img.shields.io/badge/Soroban-SDK%2023-7d00ff.svg)](https://soroban.stellar.org)
+[![CI](https://github.com/fabricioguidine/hack-meridian/actions/workflows/ci.yml/badge.svg)](https://github.com/fabricioguidine/hack-meridian/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Rust](https://img.shields.io/badge/Rust-2021-000000.svg?logo=rust&logoColor=white)](https://www.rust-lang.org)
 
-</div>
+Each badge proves attendance at an event or completion of a course; per-user badge counts feed a gamification layer. The on-chain contract holds events, ownership, and IPFS references; rich content (image/attributes) lives off-chain on IPFS.
 
-> A POAP-style, decentralized event-badge system on the Stellar Soroban smart-contract platform.
+## Components
 
-`hack-meridian` lets organizers register events and mint immutable, verifiable participation badges (POAP-like) on-chain. Each badge proves attendance at an event or completion of a course; collecting badges feeds a gamification layer (a per-user badge count). Rich content (image, attributes) lives off-chain on IPFS and is referenced from the on-chain event metadata, combining blockchain verifiability with scalable content storage. The repository is a hackathon project built around one Soroban contract (`poap_badge`) plus a read-only API and a DApp that consume it.
-
-## Table of Contents
-
-- [Features](#features)
-- [Architecture](#architecture)
-- [Requirements](#requirements)
-- [Build & run](#build--run)
-- [Project structure](#project-structure)
-- [License](#license)
-
-## Features
-
-- **On-chain event registry** — `create_event` records an event (id, organizer, name, description, IPFS image), authorized by the organizer and rejecting duplicate ids (`EventAlreadyExists`).
-- **Badge minting** — `mint_badge` issues an event's badge to a recipient; only the event organizer can mint, and double-minting is rejected (`BadgeAlreadyMinted`, `EventNotFound`).
-- **Ownership & gamification reads** — `has_badge`, `list_user_badges`, `total_badges` (per-user count), `list_event_owners`.
-- **Gallery reads** — `list_events`, `list_all_badges` (every event with metadata), `get_event` (single event metadata).
-- **Read-only REST API (Rust / axum)** — exposes `/health`, `/events`, `/events/:id`, `/events/:id/owners`, `/users/:account/badges`, and `/gallery`, reading contract state over Soroban RPC (`getLedgerEntries`, no signing).
-- **React DApp** — gallery, event detail, "My Badges" collection, and an organizer panel that signs `create_event` / `mint_badge` through the Freighter wallet.
-- **Go backend** — a parallel read API (`backend-go/`) built for language comparison.
-- **Deploy / seed / IPFS-pin scripts** — helpers under `scripts/` for testnet deployment.
+- **`poap_badge` contract (Soroban / Rust)** — the source of truth. Registers events (`create_event`, organizer-authorized, rejecting duplicate ids), mints badges (`mint_badge`, organizer-only, rejecting double-mint), and exposes ownership/gallery reads. Module layout: `lib.rs` (`#[contractimpl]` surface + `require_auth`), `event.rs`, `badge.rs`, `storage.rs` (typed `DataKey`), `types.rs`, `error.rs`, `test.rs`.
+- **Read API (Rust / axum)** — `backend/`, serves `/health`, `/events`, `/events/:id`, `/events/:id/owners`, `/users/:account/badges`, `/gallery` by reading decoded contract state over Soroban RPC (`getLedgerEntries`, no signing).
+- **Read API (Go)** — `backend-go/`, a parallel read API for language comparison.
+- **React DApp** — `frontend/`, gallery, event detail, "My Badges" collection, and an organizer panel that signs `create_event` / `mint_badge` through the Freighter wallet.
+- **Scripts** — `scripts/deploy.sh` (Stellar CLI deploy), `scripts/seed.sh` (seed demo events), `scripts/pin_ipfs.py` (pin art to IPFS via Pinata).
 
 ## Architecture
 
-The Soroban contract is the source of truth. Backends read decoded contract state over Soroban RPC; the DApp reads through the backend and writes to the contract through a wallet.
+The contract is authoritative. Backends read decoded contract state over Soroban RPC; the DApp reads through the backend and writes to the contract through a wallet.
 
 ```mermaid
 flowchart LR
@@ -56,26 +40,6 @@ flowchart LR
     FE -->|fetch art| IPFS
 ```
 
-The contract is split into focused modules over a typed `DataKey` storage layer:
-
-```mermaid
-flowchart TD
-    lib["lib.rs — #[contractimpl] surface + require_auth"]
-    event["event.rs — create / list / gallery / metadata"]
-    badge["badge.rs — mint / has_badge / list_user_badges"]
-    storage["storage.rs — DataKey enum + persistent storage"]
-    types["types.rs — EventMetadata, BadgeInfo"]
-    error["error.rs — EventAlreadyExists / EventNotFound / BadgeAlreadyMinted"]
-
-    lib --> event
-    lib --> badge
-    event --> storage
-    badge --> storage
-    event --> types
-    storage --> types
-    lib --> error
-```
-
 ### Contract public API
 
 | Function | Auth | Description |
@@ -92,11 +56,12 @@ flowchart TD
 
 ## Requirements
 
-- **Rust toolchain (edition 2021).** The contract and backend crates declare `edition = "2021"`; building the deployable wasm needs the `wasm32-unknown-unknown` target. A transitive dependency uses edition 2024, so **Rust 1.85+** is recommended.
-- **soroban-sdk 23** for the contract; **axum 0.7 / tokio / reqwest / stellar-xdr** for the backend (see `backend/Cargo.toml`).
-- **Node.js 20+** for the frontend DApp (React + Vite + TypeScript).
+- **Rust toolchain (edition 2021).** Building the deployable wasm needs the `wasm32-unknown-unknown` target.
+- **soroban-sdk 23** for the contract; **axum 0.7 / tokio / reqwest / stellar-xdr 22** for the backend (see `backend/Cargo.toml`).
+- **Node.js 20+** for the frontend DApp (React 18 + Vite 5 + TypeScript), with `@stellar/stellar-sdk` and `@stellar/freighter-api`.
 - **Go 1.24+** only for the optional `backend-go/` comparison API.
-- Optional: **Docker** (Dockerfiles per component + `docker-compose.yml`), a Soroban-RPC endpoint, and an IPFS pinning service for live use.
+- **Stellar CLI** for deploy/seed scripts.
+- Optional: **Docker** (per-component Dockerfiles + `docker-compose.yml`), a Soroban-RPC endpoint, and an IPFS pinning service for live use.
 
 ## Build & run
 
@@ -104,20 +69,10 @@ flowchart TD
 
 ```bash
 cd contracts/poap_badge
-
-# unit + auth + end-to-end tests
 cargo test
-
-# build the deployable wasm
 rustup target add wasm32-unknown-unknown
 cargo build --release --target wasm32-unknown-unknown
 # artifact: target/wasm32-unknown-unknown/release/poap_badge.wasm
-```
-
-No local toolchain? Build inside Docker (matches `docker/contracts.Dockerfile`):
-
-```bash
-docker run --rm -v "$PWD:/app" -w /app rust:1.86 cargo test
 ```
 
 ### Backend read API (`backend`, Rust / axum)
@@ -129,7 +84,7 @@ cargo build --release
 CONTRACT_ID=C... cargo run --release   # CONTRACT_ID is required
 ```
 
-Configuration is read from the environment (see `backend/.env.example`): `SOROBAN_RPC_URL` (default `https://soroban-testnet.stellar.org`), `CONTRACT_ID` (required, deployed `C...` strkey), `PORT` (default `4000`).
+Configuration is read from the environment: `SOROBAN_RPC_URL` (default `https://soroban-testnet.stellar.org`), `CONTRACT_ID` (required, deployed `C...` strkey), `PORT` (default `4000`).
 
 ### Frontend DApp (`frontend`, React + Vite + TS)
 
@@ -141,11 +96,15 @@ npm run build
 npm run test
 ```
 
-Configure `VITE_BACKEND_URL`, `VITE_CONTRACT_ID`, `VITE_SOROBAN_RPC_URL` in `frontend/.env` (see `frontend/.env.example`).
+Configure `VITE_BACKEND_URL` (default `http://localhost:4000`), `VITE_CONTRACT_ID`, `VITE_SOROBAN_RPC_URL` (default `https://soroban-testnet.stellar.org`), and `VITE_NETWORK_PASSPHRASE` in `frontend/.env`.
 
 ### Deploy / seed (testnet)
 
 `scripts/deploy.sh` (deploy via the Stellar CLI), `scripts/seed.sh` (seed demo events), and `scripts/pin_ipfs.py` (pin metadata to IPFS) cover a testnet run; see [`scripts/README.md`](scripts/README.md). Run `scripts/deploy.sh` with a funded testnet identity, then point `CONTRACT_ID` / `VITE_CONTRACT_ID` at the result.
+
+### Docker
+
+`docker-compose.yml` builds all components (`docker/*.Dockerfile`); set `CONTRACT_ID` in the environment before `docker compose up`.
 
 ## Project structure
 
@@ -171,4 +130,4 @@ hack-meridian/
 
 ## License
 
-No license file is present.
+MIT. See [LICENSE](LICENSE).
