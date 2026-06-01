@@ -224,11 +224,15 @@ next steps.
 **Demo script (90 seconds):**
 `deploy → create_event("meridian-2025") → mint_badge(alice) → alice's gallery shows 1 badge → mint again → contract rejects (BadgeAlreadyMinted)`.
 
-**Suggested milestones:**
-- **M1** - contract testnet deploy + CLI invoke (✅ contract + tests done).
-- **M2** - Freighter wallet connect + mint from organizer key.
-- **M3** - gallery reads + IPFS image render.
-- **M4** - (stretch) self-claim with an organizer-signed claim code.
+**Milestones:**
+- **M1** - contract + wasm build + tests. ✅ done (`contracts/poap_badge`).
+- **M2** - read API over Soroban RPC. ✅ done (`backend/`, Rust/axum).
+- **M3** - DApp: gallery, collection, Freighter connect, organizer create/mint. ✅ done (`frontend/`, React).
+- **M4** - testnet deploy + seed scripts + IPFS pin. ✅ scripted (`scripts/`); run against your funded key.
+- **M5** - (stretch) self-claim with an organizer-signed claim code.
+
+What remains to go *live* is operational, not code: run `scripts/deploy.sh` with a
+funded testnet identity, then point `CONTRACT_ID` / `VITE_CONTRACT_ID` at the result.
 
 ### Backend
 
@@ -244,6 +248,35 @@ Language tradeoffs considered for the backend:
 | **TypeScript** (`@stellar/stellar-sdk`) | ✅ Also strong - best-supported Soroban SDK, would share types with the frontend. |
 | **Python** (`stellar-sdk`) | ✅ Good - mature, ergonomic. |
 | **Go** (`stellar/go`) | ❌ Not advised - Horizon-focused, thin Soroban-RPC support. |
+
+### Frontend (DApp)
+
+A React + Vite + TypeScript app under [`frontend/`](frontend), styled with the
+extracted Stellar design tokens. It reads from the backend and writes to the
+contract through Freighter:
+
+- **Gallery** + **event detail** + **My Badges** - read via the backend API.
+- **Organizer** - connect Freighter, `create_event` / `mint_badge` signed in-wallet.
+
+```bash
+cd frontend
+npm install
+npm run dev        # http://localhost:5173
+npm run build && npm run test
+```
+
+Configure `VITE_BACKEND_URL`, `VITE_CONTRACT_ID`, `VITE_SOROBAN_RPC_URL` in
+`frontend/.env` (see `.env.example`).
+
+## Repository layout
+
+| Path | What |
+|---|---|
+| `contracts/poap_badge` | Soroban contract (Rust) + tests |
+| `backend` | Read API (Rust / axum) over Soroban RPC |
+| `frontend` | DApp (React + Vite + TS) |
+| `scripts` | Deploy / seed / IPFS-pin helpers ([scripts/README.md](scripts/README.md)) |
+| `.github/workflows/ci.yml` | CI: contract + backend + frontend |
 
 > The earlier `ctypes`/`.dylib` bridge was removed: a Soroban contract compiles to
 > **wasm**, not a native shared library, so it can't be loaded via `ctypes`. Backends

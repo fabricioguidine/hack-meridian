@@ -110,9 +110,9 @@ fn as_string(v: &ScVal) -> Result<String, AppError> {
 
 fn as_account_strkey(v: &ScVal) -> Result<String, AppError> {
     match v {
-        ScVal::Address(ScAddress::Account(AccountId(PublicKey::PublicKeyTypeEd25519(Uint256(
-            k,
-        ))))) => Ok(stellar_strkey::ed25519::PublicKey(*k).to_string()),
+        ScVal::Address(ScAddress::Account(AccountId(PublicKey::PublicKeyTypeEd25519(
+            Uint256(k),
+        )))) => Ok(stellar_strkey::ed25519::PublicKey(*k).to_string()),
         ScVal::Address(ScAddress::Contract(Hash(h))) => {
             Ok(stellar_strkey::Contract(*h).to_string())
         }
@@ -236,7 +236,11 @@ mod tests {
 
     #[test]
     fn decode_bytes_vec_of_ids() {
-        let v = sc_vec(vec![bytes32([0xaa; 32]).unwrap(), bytes32([0xbb; 32]).unwrap()]).unwrap();
+        let v = sc_vec(vec![
+            bytes32([0xaa; 32]).unwrap(),
+            bytes32([0xbb; 32]).unwrap(),
+        ])
+        .unwrap();
         let ids = decode_bytes_vec(&v).unwrap();
         assert_eq!(ids.len(), 2);
         assert_eq!(ids[0], "aa".repeat(32));

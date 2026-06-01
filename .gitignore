@@ -3,6 +3,9 @@
 **/test_snapshots/
 .DS_Store
 **/.DS_Store
+__pycache__/
+*.pyc
+.contract_id
 **--network
 **--source
 **--wasm
