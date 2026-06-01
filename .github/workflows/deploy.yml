@@ -1,0 +1,49 @@
+name: Deploy contract
+
+# Manual deploy of poap_badge to a Soroban network.
+# Requires repo secret STELLAR_SECRET_KEY (a funded account's secret, S...).
+on:
+  workflow_dispatch:
+    inputs:
+      network:
+        description: "Soroban network"
+        default: "testnet"
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: contracts/poap_badge
+      - name: Install Stellar CLI
+        run: cargo install --locked stellar-cli
+      - name: Build wasm
+        working-directory: contracts/poap_badge
+        run: stellar contract build
+      - name: Deploy
+        env:
+          STELLAR_SECRET_KEY: ${{ secrets.STELLAR_SECRET_KEY }}
+          NETWORK: ${{ inputs.network }}
+        run: |
+          if [ -z "$STELLAR_SECRET_KEY" ]; then
+            echo "::error::set the STELLAR_SECRET_KEY repo secret first"; exit 1
+          fi
+          stellar keys add ci --secret-key "$STELLAR_SECRET_KEY"
+          CONTRACT_ID=$(stellar contract deploy \
+            --wasm contracts/poap_badge/target/wasm32-unknown-unknown/release/poap_badge.wasm \
+            --source ci --network "$NETWORK")
+          echo "Deployed contract: $CONTRACT_ID"
+          {
+            echo "### Deployed"
+            echo ""
+            echo "- network: \`$NETWORK\`"
+            echo "- contract id: \`$CONTRACT_ID\`"
+            echo ""
+            echo "Set this as \`CONTRACT_ID\` (backend) and \`VITE_CONTRACT_ID\` (frontend)."
+          } >> "$GITHUB_STEP_SUMMARY"
