@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-label="hack-meridian">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1117"/>
+      <stop offset="1" stop-color="#2f7437"/>
+    </linearGradient>
+    <linearGradient id="accentbar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#56d364"/>
+      <stop offset="1" stop-color="#2f7437"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="300" fill="url(#bg)"/>
+  <rect width="1200" height="300" fill="#0d1117" fill-opacity="0.55"/>
+  <rect x="0" y="0" width="14" height="300" fill="url(#accentbar)"/>
+  <circle cx="1080" cy="80" r="180" fill="#56d364" fill-opacity="0.06"/>
+  <circle cx="1140" cy="240" r="120" fill="#56d364" fill-opacity="0.05"/>
+  <text x="60" y="96" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="56" font-weight="700" fill="#f0f6fc">hack-meridian</text>
+  <text x="60" y="152" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="24" fill="#8b949e">POAP-style verifiable event badges on Stellar Soroban</text>
+  <g><rect x="60" y="232" rx="13" ry="13" width="58" height="30" fill="#161b22" stroke="#56d364" stroke-opacity="0.45"/><text x="89" y="252" text-anchor="middle" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-size="14" fill="#c9d1d9">Rust</text></g><g><rect x="130" y="232" rx="13" ry="13" width="85" height="30" fill="#161b22" stroke="#56d364" stroke-opacity="0.45"/><text x="172" y="252" text-anchor="middle" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-size="14" fill="#c9d1d9">Soroban</text></g><g><rect x="227" y="232" rx="13" ry="13" width="85" height="30" fill="#161b22" stroke="#56d364" stroke-opacity="0.45"/><text x="270" y="252" text-anchor="middle" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-size="14" fill="#c9d1d9">Stellar</text></g><g><rect x="324" y="232" rx="13" ry="13" width="58" height="30" fill="#161b22" stroke="#56d364" stroke-opacity="0.45"/><text x="353" y="252" text-anchor="middle" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-size="14" fill="#c9d1d9">axum</text></g><g><rect x="394" y="232" rx="13" ry="13" width="67" height="30" fill="#161b22" stroke="#56d364" stroke-opacity="0.45"/><text x="428" y="252" text-anchor="middle" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-size="14" fill="#c9d1d9">React</text></g><g><rect x="473" y="232" rx="13" ry="13" width="58" height="30" fill="#161b22" stroke="#56d364" stroke-opacity="0.45"/><text x="502" y="252" text-anchor="middle" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-size="14" fill="#c9d1d9">IPFS</text></g>
+</svg>
