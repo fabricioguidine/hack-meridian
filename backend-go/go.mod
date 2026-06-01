@@ -1,0 +1,13 @@
+module hackmeridian/backendgo
+
+go 1.24.0
+
+toolchain go1.24.13
+
+require github.com/stellar/go v0.0.0-20251210100531-aab2ea4aca88
+
+require (
+	github.com/klauspost/compress v1.17.6 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+	github.com/stellar/go-xdr v0.0.0-20231122183749-b53fb00bcac2 // indirect
+)

@@ -247,7 +247,7 @@ Language tradeoffs considered for the backend:
 | **Rust** (`axum` + Soroban RPC) | ✅ Implemented - shares the domain model with the contract; reads decoded straight from on-chain ScVal. |
 | **TypeScript** (`@stellar/stellar-sdk`) | ✅ Also strong - best-supported Soroban SDK, would share types with the frontend. |
 | **Python** (`stellar-sdk`) | ✅ Good - mature, ergonomic. |
-| **Go** (`stellar/go`) | ❌ Not advised - Horizon-focused, thin Soroban-RPC support. |
+| **Go** (`stellar/go`) | ⚠️ Built for comparison ([`backend-go/`](backend-go)) - works for reads, but Horizon-oriented, no Soroban-RPC client, needs Go >= 1.24. |
 
 ### Frontend (DApp)
 
@@ -274,6 +274,7 @@ Configure `VITE_BACKEND_URL`, `VITE_CONTRACT_ID`, `VITE_SOROBAN_RPC_URL` in
 |---|---|
 | `contracts/poap_badge` | Soroban contract (Rust) + tests |
 | `backend` | Read API (Rust / axum) over Soroban RPC |
+| `backend-go` | Same read API in Go (comparison) |
 | `frontend` | DApp (React + Vite + TS) |
 | `scripts` | Deploy / seed / IPFS-pin helpers ([scripts/README.md](scripts/README.md)) |
 | `.github/workflows/ci.yml` | CI: contract + backend + frontend |
